@@ -1,0 +1,49 @@
+{
+    "collection": "daylio",
+    "aggregate": [
+        {
+            "$unwind": {
+                "path": "$activities",
+                "preserveNullAndEmptyArrays": false
+            }
+        },
+        {
+            "$match": {
+                "activities": {"$in": ["Muay Thai (Lesson)", "Muay Thai (Lesson x2)", "BJJ"]},
+                "full_date": {
+                    "$gte": {
+                        "$humanTime": "{{Date Range (Short).start}}"
+                    },
+                    "$lte": {
+                        "$humanTime": "{{Date Range (Short).end}}"
+                    
+                    }
+	            }
+            }
+        },
+        {
+        "$group": {
+                "count": { "$sum": 1 },
+                "_id": null
+            }
+        },
+        {
+            "$addFields": {
+                "muay_thai_percentage": {
+                    "$multiply": [
+                         {"$divide": [
+                            "$count", {
+                            "$dateDiff": {
+                                "startDate": {"$humanTime": "{{Date Range (Short).start}}"},
+                                "endDate": {"$humanTime": "{{Date Range (Short).end}}"},
+                                "unit": "day"}
+                                }
+                            ]
+                        },
+                        100
+                    ]
+                }
+            }
+        }
+    ]
+}
