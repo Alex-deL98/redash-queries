@@ -1,0 +1,31 @@
+{
+    "collection": "daylio",
+    "aggregate": [
+        {
+            "$unwind": {
+                "path": "$activities",
+                "preserveNullAndEmptyArrays": false
+            }
+        },
+        {
+            "$match": {
+                "activities": {"$in": ["gym", "Muay Thai (Lesson)", "Muay Thai (Lesson x2)", "Muay Thai (From home)", "Walk", "Dancing", "Running"]},
+                "full_date": {
+                    "$gte": {
+                        "$humanTime": "{{Date Range (Short).start}}"
+                    },
+                    "$lte": {
+                        "$humanTime": "{{Date Range (Short).end}}"
+                    
+                    }
+	            }
+            }
+        },
+        {
+        "$group": {
+                "count": { "$sum": 1 },
+                "_id": null
+            }
+        }
+    ]
+}
