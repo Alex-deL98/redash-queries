@@ -1,0 +1,51 @@
+{
+    "collection": "daylio",
+    "aggregate": [
+        {
+            "$unwind": {
+                "path": "$activities",
+                "preserveNullAndEmptyArrays": false
+            }
+        },
+        {
+            "$match": {
+                "activities": {"$in": ["gym", "Muay Thai (Lesson)", "Muay Thai (Lesson x2)", "Muay Thai (From home)", "Walk", "Dancing", "Running"]},
+                "full_date": {
+                    "$gte": {
+                        "$humanTime": "{{Date Range (Short).start}}"
+                    },
+                    "$lte": {
+                        "$humanTime": "{{Date Range (Short).end}}"
+                    
+                    }
+	            }
+            }
+        },
+        {
+            "$group": {
+                "_id": "exercise count",
+                "count": {
+                    "$sum": 1
+                }
+            }
+        },
+        {
+            "$addFields": {
+                "exercise_percentage": {
+                    "$multiply": [
+                         {"$divide": [
+                            "$count", {
+                            "$dateDiff": {
+                                "startDate": {"$humanTime": "{{Date Range (Short).start}}"},
+                                "endDate": {"$humanTime": "{{Date Range (Short).end}}"},
+                                "unit": "day"}
+                                }
+                            ]
+                        },
+                        100
+                    ]
+                }
+            }
+        }
+    ]
+}

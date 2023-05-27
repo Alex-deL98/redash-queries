@@ -1,0 +1,64 @@
+{
+    "collection": "daylio",
+    "aggregate": [
+        {
+            "$unwind": {
+                "path": "$activities",
+                "preserveNullAndEmptyArrays": false
+            }
+        },
+        {
+            "$match": {
+                "activities": {"$in": ["Muay Thai (Lesson)", "Muay Thai (Lesson x2)", "BJJ"]},
+                "full_date": {
+                    "$gte": {
+                        "$humanTime": "{{Date Range (Medium).start}}"
+                    },
+                    "$lte": {
+                        "$humanTime": "{{Date Range (Medium).end}}"
+                    }
+                }
+            }
+        },
+        {
+            "$group": {
+                "_id": "exercise count",
+                "count": {
+                    "$sum": 1
+                }
+            }
+        },
+        {
+            "$addFields": {
+                "exercise_dates": {
+                    "$dateDiff": {
+                        "startDate": {
+                            "$humanTime": "{{Date Range (Medium).start}}"
+                        },
+                        "endDate": "$$NOW",
+                        "unit": "day"
+                    }
+                },
+                "exercise_percentage": {
+                    "$multiply": [
+                        {
+                            "$divide": [
+                                "$count", 
+                                {
+                                    "$dateDiff": {
+                                        "startDate": {
+                                            "$humanTime": "{{Date Range (Medium).start}}"
+                                    },
+                                        "endDate": "$$NOW",
+                                        "unit": "day"
+                                    }
+                                }
+                            ]
+                        },
+                        100
+                    ]
+                }
+            }
+        }
+    ]
+}
