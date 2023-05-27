@@ -1,0 +1,18 @@
+{
+	"collection": "nabEmergency",
+	"query": {
+	    "datetime": {
+            "$gte": {
+                "$humanTime": "{{Date Range (Long).start}}"
+            },
+            "$lte": {
+                "$humanTime": "{{Date Range (Long).end}}"
+            }
+	    }
+	},
+	"fields": {
+		"Date": 1,
+		"datetime": 2,
+		"Balance": 3
+	}
+}

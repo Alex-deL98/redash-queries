@@ -1,0 +1,32 @@
+{
+    "collection": "daylio",
+    "aggregate": [
+        {
+            "$match": {
+                "full_date": {
+                    "$gte": {
+                        "$humanTime": "{{Date Range (Long).start}}"
+                    },
+                    "$lte": {
+                        "$humanTime": "{{Date Range (Long).end}}"
+                    
+                    }
+	            }
+            }
+        },
+        {
+            "$group": {
+                "_id": ["$year", "$month"],
+                "mood": { "$avg": "$mood_numeric" }
+            }
+        },
+        {
+            "$sort": [
+                {
+                    "name": "_id",
+                    "direction": 1
+                }
+            ]
+        }
+    ]
+}

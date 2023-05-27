@@ -1,0 +1,18 @@
+{
+	"collection": "raiz",
+	"query": {
+	    "date": {
+            "$gte": {
+                "$humanTime": "{{Date Range (Long).start}}"
+            },
+            "$lte": {
+                "$humanTime": "{{Date Range (Long).end}}"
+            }
+	    }
+	},
+	"fields": {
+		"date": 1,
+		"account_balance": 2,
+		"change_in_account_value": 3
+	}
+}
